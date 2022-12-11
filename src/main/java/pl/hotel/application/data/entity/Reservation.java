@@ -7,17 +7,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "Reservation")
+@IdClass(ReservationId.class)
 public class Reservation {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;	
+	private int reservationNumber;		
+	@Id
+	private int positionNumber;
 	@Column(name="Start_Time")
 	private LocalDate from;
 	@Column(name="End_Time")
@@ -26,19 +30,32 @@ public class Reservation {
 	private boolean ended;
 	private int fee;
 	private int totalFee;
-	@OneToOne
+	/*@OneToOne
 	private Room room;
-	@ManyToOne
-	private User user;
-	public int getId() {
+	@OneToOne
+	private User user;*/
+/*	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
+	}*/
+	public int getReservationNumber() {
+		return reservationNumber;
+	}
+	public void setReservationNumber(int reservationNumber) {
+		this.reservationNumber = reservationNumber;
+	}
+	public int getPositionNumber() {
+		return positionNumber;
+	}
+	public void setPositionNumber(int positionNumber) {
+		this.positionNumber = positionNumber;
 	}
 	public LocalDate getFrom() {
 		return from;
 	}
+	
 	public void setFrom(LocalDate from) {
 		this.from = from;
 	}
@@ -66,7 +83,7 @@ public class Reservation {
 	public void setFee(int fee) {
 		this.fee = fee;
 	}
-	public Room getRoom() {
+/*	public Room getRoom() {
 		return room;
 	}
 	public void setRoom(Room room) {
@@ -77,7 +94,7 @@ public class Reservation {
 	}
 	public void setUser(User user) {
 		this.user = user;
-	}
+	}*/
 	public int getTotalFee() {
 		return totalFee;
 	}

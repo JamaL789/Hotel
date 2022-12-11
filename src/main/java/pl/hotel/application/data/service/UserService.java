@@ -17,12 +17,14 @@ public class UserService {
     public UserService(UserRepository repository) {
         this.repository = repository;
     }
-
+    public User getUserByNick(String username) {
+    	return repository.findByUsername(username);
+    }
     public Optional<User> get(int id) {
         return repository.findById(id);
     }
 
-    public User update(User entity) {
+    public User addUser(User entity) {
         return repository.save(entity);
     }
 
