@@ -94,6 +94,8 @@ public class KontoView extends VerticalLayout {
 			remove(username);
 		//	add(loginInfo);
 			loginInfo.setText("Zaloguj się");
+			name.clear();
+			email.clear();
 			add(username);
 			remove(password);
 			add(password);
