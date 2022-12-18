@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -34,7 +35,7 @@ public class KontoView extends VerticalLayout {
 	private Button logOut = new Button("Wyloguj się");
 	private TextField username = new TextField("Nazwa użytkownika:");
 	private TextField name = new TextField("Imię i nazwisko:");
-	private TextField email = new TextField("E-mail:");
+	private EmailField email = new EmailField("E-mail:");
 	private PasswordField password = new PasswordField("Hasło:");
 	private PasswordField secondPassword = new PasswordField("Powtórz hasło:");
 	private final UserService userService;
@@ -44,25 +45,16 @@ public class KontoView extends VerticalLayout {
 
 		setSpacing(false);
 		if (!isRegistration) {
-			add(loginInfo);
-			add(username);
-			add(password);
-			add(logIn);
-			add(registerQuestion);
-			add(register);
+			add(loginInfo, username, password, logIn, registerQuestion, register);			
 		}
 		logIn.addClickListener(e -> {
 			if (username.getValue() != "" && password.getValue() != "") {
 				User user = userService.getUserByNick(username.getValue());
 				if (!(user==null)) {
 					if (user.getPassword().equals(password.getValue())) {
-				//		remove(loginInfo);
 						loginInfo.setText("Twoje dane: ");
-						add(email);
-						add(name);
-						remove(registerQuestion);
-						remove(register);
-						remove(logIn);
+						add(email, name, logOut);
+						remove(registerQuestion, register, logIn);						
 						email.setValue(user.getEmail());
 						email.setEnabled(false);
 						username.setValue(user.getName());
@@ -70,7 +62,6 @@ public class KontoView extends VerticalLayout {
 						password.setEnabled(false);
 						username.setEnabled(false);
 						name.setValue(user.getName());
-						add(logOut);
 					} else {
 						Notification.show("Niepoprawne hasło!");
 					}
@@ -84,26 +75,17 @@ public class KontoView extends VerticalLayout {
 
 		});
 		logOut.addClickListener(e -> {
+			remove(email,name, logOut);
+			add(logIn, registerQuestion, register);
 			email.setEnabled(true);
-			remove(email);
 			username.setEnabled(true);
 			username.clear();
 			password.setEnabled(true);
 			password.clear();
 			name.setEnabled(true);
-			remove(username);
-		//	add(loginInfo);
 			loginInfo.setText("Zaloguj się");
 			name.clear();
-			email.clear();
-			add(username);
-			remove(password);
-			add(password);
-			remove(name);
-			add(logIn);
-			remove(logOut);
-			add(registerQuestion);
-			add(register);
+			email.clear();			
 		});
 		register.addClickListener(e -> {
 			if (isRegistration) {
@@ -119,48 +101,28 @@ public class KontoView extends VerticalLayout {
 					isRegistration = false;
 					Notification.show("Konto zostało pomyślnie utworzone!");
 					loginInfo.setText("Zaloguj się:");
-					remove(secondPassword);
-					remove(email);
-					remove(name);
+					remove(secondPassword, email, name, comeback, register);				
 					registerQuestion.setVisible(true);
 					register.setText("Rejestracja");
-					remove(comeback);
-					remove(register);
-					add(logIn);
-					add(registerQuestion);
-					add(register);
+					add(logIn, registerQuestion, register);
 				} else {
 					Notification.show("Wypełnij poprawnie wszystkie pola!");
 				}
 			} else {
 				isRegistration = true;
 				loginInfo.setText("Wypełnij poniższe pola:");
-				remove(logIn);
-				remove(registerQuestion);
-				remove(password);
-				remove(register);
-				add(name);
-				add(email);
-				add(password);
-				add(secondPassword);
-				register.setText("Zarejestruj się");
-				add(register);
-				add(comeback);
+				remove(logIn, registerQuestion, password, register);
+				add(name, email, password, secondPassword, register, comeback);				
+				register.setText("Zarejestruj się");				
 			}
 		});
 		comeback.addClickListener(e -> {
 			isRegistration = false;
 			loginInfo.setText("Zaloguj się:");
-			remove(secondPassword);
-			remove(email);
-			remove(name);
+			remove(secondPassword, email, name, comeback, register);			
 			registerQuestion.setVisible(true);
-			register.setText("Rejestracja");
-			remove(comeback);
-			remove(register);
-			add(logIn);
-			add(registerQuestion);
-			add(register);
+			register.setText("Rejestracja");			
+			add(logIn, registerQuestion, register);			
 		});
 		setSizeFull();
 		// setJustifyContentMode(JustifyContentMode.CENTER);

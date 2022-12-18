@@ -3,6 +3,9 @@ package pl.hotel.application.data.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pl.hotel.application.data.RoomType;
+import pl.hotel.application.data.entity.Room;
+
 @Service
 public class RoomService {
 	private final RoomRepository repository;
@@ -11,5 +14,7 @@ public class RoomService {
 	    this.repository = repository;
 	}
 	
-	
+	public Room getRoomByType(RoomType roomType, boolean isBalcony) {
+		return repository.getRoomByType(roomType, isBalcony);
+	}
 }

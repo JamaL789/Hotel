@@ -17,14 +17,19 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.security.PermitAll;
 
 import pl.hotel.application.data.RoomType;
+import pl.hotel.application.data.entity.Reservation;
+import pl.hotel.application.data.entity.Room;
 import pl.hotel.application.data.entity.User;
 import pl.hotel.application.data.service.ReservationService;
+import pl.hotel.application.data.service.RoomService;
 import pl.hotel.application.data.service.UserService;
 import pl.hotel.application.views.MainLayout;
 
@@ -36,11 +41,10 @@ public class RezerwacjaView extends VerticalLayout {
 
 	private final ReservationService reservationService;
 	private final UserService userService;
-
+	private final RoomService roomService;
 	private TextField username = new TextField("Nazwa użytkownika:");
 	private TextField name = new TextField("Imię i nazwisko:");
 	private TextField password = new TextField("Hasło:");
-	private EmailField email = new EmailField("E-mail:");
 	private DatePicker dateFrom = new DatePicker("Od:");
 	private DatePicker dateTo = new DatePicker("Do:");
 	private Button cancel = new Button("Anuluj");
@@ -51,83 +55,85 @@ public class RezerwacjaView extends VerticalLayout {
 	private H3 info = new H3("Zaloguj się, aby dokonać rezerwacji:");
 	private ComboBox<RoomType> roomTypeCombobox = new ComboBox<>("Pokój:");
 
-	public RezerwacjaView(ReservationService reservationService, UserService userService) {
-        this.reservationService = reservationService;
-        this.userService = userService;
-        setSpacing(false);
-        setSizeFull();
-        List<RoomType> typeList = new ArrayList<>();
-        typeList.add(RoomType.Maly);
-        typeList.add(RoomType.Sredni);
-        typeList.add(RoomType.Duzy);
-        typeList.add(RoomType.Apartament);
-        roomTypeCombobox.setItems(typeList);
-        add(info);
-        add(username);
-        add(password);
-        add(logIn);
-   //     roomTypeCombobox.
-        logIn.addClickListener(e -> {
+	public RezerwacjaView(ReservationService reservationService, UserService userService, RoomService roomService) {
+		this.reservationService = reservationService;
+		this.userService = userService;
+		this.roomService = roomService;
+		setSpacing(false);
+		setSizeFull();
+		List<RoomType> typeList = new ArrayList<>();
+		typeList.add(RoomType.Maly);
+		typeList.add(RoomType.Sredni);
+		typeList.add(RoomType.Duzy);
+		typeList.add(RoomType.Apartament);
+		roomTypeCombobox.setItems(typeList);
+		add(info, username, password, logIn);
+
+		logIn.addClickListener(e -> {
 			if (username.getValue() != "" && password.getValue() != "") {
 				User user = userService.getUserByNick(username.getValue());
-				if (!(user==null)) {
+				if (!(user == null)) {
 					if (user.getPassword().equals(password.getValue())) {
-						remove(logIn);
-						remove(password);
-						remove(username);
-						add(name);
-						name.setValue(user.getName());						
-						add(dateFrom);
-				        add(dateTo);
-				        add(roomTypeCombobox);
-				        add(balcony);
-				        add(reserve);
-				        add(cancel);
-						info.setText("Wypelnij ponizsze pola, aby dokonac rezerwacji: ");
-												
-						remove(logIn);
-						email.setValue(user.getEmail());
-						email.setEnabled(false);
-						username.setValue(user.getName());
-						name.setEnabled(false);
-						password.setEnabled(false);
-						username.setEnabled(false);
+
 						name.setValue(user.getName());
-						add(logOut);
+						name.setEnabled(false);
+						remove(logIn, password, username);
+						add(name, cancel, dateFrom, dateTo, roomTypeCombobox, balcony, reserve, cancel, logOut);
+						info.setText("Wypelnij ponizsze pola, aby dokonac rezerwacji: ");
 					} else {
 						Notification.show("Niepoprawne hasło!");
 					}
-				}else {
-						Notification.show("Nie znaleziono użytkownika!");
-					}
+				} else {
+					Notification.show("Nie znaleziono użytkownika!");
 				}
-			else {
+			} else {
 				Notification.show("Wypełnij oba pola!");
 			}
-        });
-        logOut.addClickListener(e -> {
-			info.setText("Zaloguj się:");
-			remove(dateFrom);
-			remove(dateTo);
-			remove(name);
-			remove(logOut);
-			remove(cancel);
-			remove(reserve);
-			remove(roomTypeCombobox);
-			remove(balcony);
-			add(username);			
-			add(password);		
-			add(logIn);
 		});
-		cancel.addClickListener(e ->{
+		logOut.addClickListener(e -> {
+			info.setText("Zaloguj się, aby dokonać rezerwacji:");
+			remove(dateFrom, dateTo, name, logOut, cancel, reserve, roomTypeCombobox, balcony);
+			add(username, password, logIn);
+		});
+		cancel.addClickListener(e -> {
 			dateFrom.setValue(null);
 			dateTo.setValue(null);
 			balcony.setValue(false);
 			roomTypeCombobox.setValue(null);
 		});
- //       setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        getStyle().set("text-align", "center");
-    }
+		reserve.addClickListener(e -> {
+			if (roomTypeCombobox.getValue() != null) {
+				Room room = roomService.getRoomByType(roomTypeCombobox.getValue(), balcony.getValue());
+				if ((dateFrom.getValue().atStartOfDay().isEqual(LocalDate.now().atStartOfDay())
+						|| dateFrom.getValue().atStartOfDay().isAfter(LocalDate.now().atStartOfDay()))
+						&& dateTo.getValue().atStartOfDay().isAfter(LocalDate.now().atStartOfDay())
+						&& dateTo.getValue().atStartOfDay().isAfter(dateFrom.getValue().atStartOfDay())
+						&& roomTypeCombobox.getValue() != null) {
+					Reservation res = new Reservation();
+					User u = userService.getUserByNick(username.getValue());
+					res.setEnded(false);
+					res.setFee(room.getPrice());
+					res.setFrom(dateFrom.getValue());
+					res.setTo(dateTo.getValue());
+					res.setTotalFee(room.getPrice());
+					if(dateFrom.getValue().atStartOfDay().isEqual(LocalDate.now().atStartOfDay())) {
+						res.setStarted(true);
+					}else {
+						res.setStarted(false);
+					}
+					res.setPositionNumber(1);
+					res.setRoomUser(u);
+					reservationService.addReservation(res);
+					
+				}
+			}else {
+				Notification.show("Wybierz pokój!");
+			}
+
+		});
+		// setJustifyContentMode(JustifyContentMode.CENTER);
+		setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+		getStyle().set("text-align", "center");
+	}
 
 }

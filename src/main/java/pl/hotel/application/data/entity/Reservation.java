@@ -28,12 +28,12 @@ public class Reservation {
 	private LocalDate to;
 	private boolean started;
 	private boolean ended;
-	private int fee;
-	private int totalFee;
+	private double fee;
+	private double totalFee;
 	/*@OneToOne
-	private Room room;
+	private Room room;;*/
 	@OneToOne
-	private User user;*/
+	private User roomUser;
 /*	public int getId() {
 		return id;
 	}
@@ -77,10 +77,10 @@ public class Reservation {
 	public void setEnded(boolean ended) {
 		this.ended = ended;
 	}
-	public int getFee() {
+	public double getFee() {
 		return fee;
 	}
-	public void setFee(int fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
 /*	public Room getRoom() {
@@ -88,17 +88,17 @@ public class Reservation {
 	}
 	public void setRoom(Room room) {
 		this.room = room;
-	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
 	}*/
-	public int getTotalFee() {
+	public User getRoomUser() {
+		return roomUser;
+	}
+	public void setRoomUser(User user) {
+		this.roomUser = user;
+	}
+	public double getTotalFee() {
 		return totalFee;
 	}
-	public void setTotalFee(int totalFee) {
+	public void setTotalFee(double totalFee) {
 		this.totalFee = totalFee;
 	}
 	
