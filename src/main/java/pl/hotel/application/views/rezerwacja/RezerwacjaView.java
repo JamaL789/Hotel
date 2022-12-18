@@ -12,6 +12,7 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -44,7 +45,7 @@ public class RezerwacjaView extends VerticalLayout {
 	private final RoomService roomService;
 	private TextField username = new TextField("Nazwa użytkownika:");
 	private TextField name = new TextField("Imię i nazwisko:");
-	private TextField password = new TextField("Hasło:");
+	private PasswordField password = new PasswordField("Hasło:");
 	private DatePicker dateFrom = new DatePicker("Od:");
 	private DatePicker dateTo = new DatePicker("Do:");
 	private Button cancel = new Button("Anuluj");
@@ -101,6 +102,16 @@ public class RezerwacjaView extends VerticalLayout {
 			balcony.setValue(false);
 			roomTypeCombobox.setValue(null);
 		});
+		roomTypeCombobox.addValueChangeListener(e->{
+			Room r = roomService.getRoomByType(e.getValue(), balcony.getValue());
+			if(r.getAmountFree()>0) {
+				reserve.setEnabled(true);
+				Notification.show("Pokój tego typu jest dostępny!");
+			}else {
+				reserve.setEnabled(false);
+				Notification.show("Brak dostępnych pokojów tego typu");
+			}
+		});
 		reserve.addClickListener(e -> {
 			if (roomTypeCombobox.getValue() != null) {
 				Room room = roomService.getRoomByType(roomTypeCombobox.getValue(), balcony.getValue());
@@ -121,10 +132,12 @@ public class RezerwacjaView extends VerticalLayout {
 					}else {
 						res.setStarted(false);
 					}
-					res.setPositionNumber(1);
+					res.setReservationNumber(1);
 					res.setRoomUser(u);
 					reservationService.addReservation(res);
-					
+					Notification.show("Dokonano rezerwacji na termin " + dateFrom.getValue().toString());
+				}else {
+					Notification.show("Wybierz poprawny termin rozpoczęcia i zakończenia rezerwacji!");
 				}
 			}else {
 				Notification.show("Wybierz pokój!");
