@@ -105,11 +105,15 @@ public class RezerwacjaView extends VerticalLayout {
 		roomTypeCombobox.addValueChangeListener(e->{
 			Room r = roomService.getRoomByType(e.getValue(), balcony.getValue());
 			if(r.getAmountFree()>0) {
-				reserve.setEnabled(true);
 				Notification.show("Pokój tego typu jest dostępny!");
 			}else {
-				reserve.setEnabled(false);
 				Notification.show("Brak dostępnych pokojów tego typu");
+			}
+			if(e.getValue().equals(RoomType.Apartament)) {
+				balcony.setValue(true);
+				balcony.setEnabled(false);
+			}else {
+				balcony.setEnabled(true);
 			}
 		});
 		reserve.addClickListener(e -> {

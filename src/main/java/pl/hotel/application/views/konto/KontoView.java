@@ -1,6 +1,8 @@
 package pl.hotel.application.views.konto;
 
+import com.example.application.data.entity.Flower;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H4;
@@ -17,7 +19,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import pl.hotel.application.data.Role;
+import pl.hotel.application.data.entity.Reservation;
 import pl.hotel.application.data.entity.User;
+import pl.hotel.application.data.service.ReservationService;
 import pl.hotel.application.data.service.UserService;
 import pl.hotel.application.views.MainLayout;
 
@@ -26,6 +30,9 @@ import pl.hotel.application.views.MainLayout;
 @AnonymousAllowed
 public class KontoView extends VerticalLayout {
 
+	private final UserService userService;
+	private final ReservationService reservationService;
+	
 	private boolean isRegistration = false;
 	private H2 loginInfo = new H2("Zaloguj się:");
 	private H5 registerQuestion = new H5("Nie posiadasz konta?");
@@ -33,27 +40,36 @@ public class KontoView extends VerticalLayout {
 	private Button register = new Button("Rejestracja");
 	private Button comeback = new Button("Powrót");
 	private Button logOut = new Button("Wyloguj się");
+	private Button reservationHistory = new Button("Rezerwacje");
+	private Grid<Reservation> reservations = new Grid<>(Reservation.class, false);
 	private TextField username = new TextField("Nazwa użytkownika:");
 	private TextField name = new TextField("Imię i nazwisko:");
 	private EmailField email = new EmailField("E-mail:");
 	private PasswordField password = new PasswordField("Hasło:");
 	private PasswordField secondPassword = new PasswordField("Powtórz hasło:");
-	private final UserService userService;
 
-	public KontoView(UserService userService) {
+	public KontoView(UserService userService, ReservationService reservationService) {
 		this.userService = userService;
-
+		this.reservationService = reservationService;
 		setSpacing(false);
-		if (!isRegistration) {
-			add(loginInfo, username, password, logIn, registerQuestion, register);			
-		}
+		add(loginInfo, username, password, logIn, registerQuestion, register);			
+		reservationHistory.addClickListener(e->{
+			if(reservations.isVisible()) {
+				reservations.setVisible(false);				
+			}else {
+				reservations.setVisible(true);
+			}
+		});
+		reservations.addColumns("reservationNumber", "from", "to", "totalFee");
 		logIn.addClickListener(e -> {
 			if (username.getValue() != "" && password.getValue() != "") {
 				User user = userService.getUserByNick(username.getValue());
 				if (!(user==null)) {
 					if (user.getPassword().equals(password.getValue())) {
 						loginInfo.setText("Twoje dane: ");
-						add(email, name, logOut);
+						reservations.setItems(reservationService.getReservationsByUser(user));
+						add(email, name, reservationHistory, reservations, logOut);
+						reservations.setVisible(false);
 						remove(registerQuestion, register, logIn);						
 						email.setValue(user.getEmail());
 						email.setEnabled(false);
@@ -75,7 +91,7 @@ public class KontoView extends VerticalLayout {
 
 		});
 		logOut.addClickListener(e -> {
-			remove(email,name, logOut);
+			remove(email,name, reservationHistory, reservations,logOut);
 			add(logIn, registerQuestion, register);
 			email.setEnabled(true);
 			username.setEnabled(true);
