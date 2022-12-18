@@ -20,6 +20,7 @@ public class Room {
 	@Enumerated(EnumType.STRING)
     private RoomType roomType;
 	private double price;
+	private boolean balcony;
 	private int amountFree;
 	private int amountReserved;
 	
@@ -53,4 +54,11 @@ public class Room {
 	public void setAmountReserved(int amountReserved) {
 		this.amountReserved = amountReserved;
 	}
+	public boolean isBalcony() {
+		return balcony;
+	}
+	public void setBalcony(boolean balcony) {
+		this.balcony = balcony;
+	}
+	
 }

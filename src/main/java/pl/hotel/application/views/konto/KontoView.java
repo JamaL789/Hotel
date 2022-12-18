@@ -107,7 +107,8 @@ public class KontoView extends VerticalLayout {
 		});
 		register.addClickListener(e -> {
 			if (isRegistration) {
-				if (username.getValue() != "" && name.getValue() != "" && email.getValue() != ""
+				User u = userService.getUserByNick(username.getValue());				
+				if (u == null && username.getValue() != "" && name.getValue() != "" && email.getValue() != ""
 						&& !(password.getValue().isEmpty()) && password.getValue().equals(secondPassword.getValue())) {
 					User user = new User();
 					user.setName(name.getValue());
