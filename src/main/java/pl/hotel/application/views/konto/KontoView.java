@@ -1,6 +1,5 @@
 package pl.hotel.application.views.konto;
 
-import com.example.application.data.entity.Flower;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;

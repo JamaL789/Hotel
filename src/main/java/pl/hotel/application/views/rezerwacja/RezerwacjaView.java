@@ -18,6 +18,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -127,10 +128,13 @@ public class RezerwacjaView extends VerticalLayout {
 					Reservation res = new Reservation();
 					User u = userService.getUserByNick(username.getValue());
 					res.setEnded(false);
+					Duration diff = Duration.between(dateFrom.getValue().atStartOfDay(),
+							dateTo.getValue().atStartOfDay());
+					Long diffDays = diff.toDays();
 					res.setFee(room.getPrice());
 					res.setFrom(dateFrom.getValue());
 					res.setTo(dateTo.getValue());
-					res.setTotalFee(room.getPrice());
+					res.setTotalFee(room.getPrice()*diffDays);
 					if(dateFrom.getValue().atStartOfDay().isEqual(LocalDate.now().atStartOfDay())) {
 						res.setStarted(true);
 					}else {
