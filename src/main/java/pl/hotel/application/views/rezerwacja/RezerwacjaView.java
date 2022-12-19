@@ -22,7 +22,9 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.PermitAll;
 
@@ -96,6 +98,13 @@ public class RezerwacjaView extends VerticalLayout {
 			info.setText("Zaloguj się, aby dokonać rezerwacji:");
 			remove(dateFrom, dateTo, name, logOut, cancel, reserve, roomTypeCombobox, balcony);
 			add(username, password, logIn);
+			dateFrom.clear();
+			dateTo.clear();
+			roomTypeCombobox.setValue(null);
+			balcony.setValue(false);
+			username.setValue("");
+			password.setValue("");
+			name.clear();
 		});
 		cancel.addClickListener(e -> {
 			dateFrom.setValue(null);
@@ -140,10 +149,22 @@ public class RezerwacjaView extends VerticalLayout {
 					}else {
 						res.setStarted(false);
 					}
-					res.setReservationNumber(1);
+//					res.setReservationNumber(1);
+					List<Reservation> reservs = reservationService.getReservations();
+					Reservation ress = reservs.stream()
+							.max(Comparator.comparing(Reservation::getReservationNumber)).orElse(null);//collect(Collectors.toList());
+					res.setReservationNumber(ress.getReservationNumber()+1);
+					
 					res.setRoomUser(u);
 					reservationService.addReservation(res);
+					res.setPositionNumber(0);
 					Notification.show("Dokonano rezerwacji na termin " + dateFrom.getValue().toString());
+					roomService.updateRoomCount(room.getAmountFree()-1, room.getAmountReserved()+1, room.getId());
+					dateFrom.clear();
+					dateTo.clear();
+					roomTypeCombobox.clear();
+					balcony.setValue(false);
+					
 				}else {
 					Notification.show("Wybierz poprawny termin rozpoczęcia i zakończenia rezerwacji!");
 				}

@@ -22,4 +22,8 @@ public class ReservationService {
 	public List<Reservation> getReservationsByUser(User user){
 		return repository.findReservationsByUser(user);
 	}
+	
+	public List<Reservation> getReservations(){
+		return repository.findAll();
+	}
 }

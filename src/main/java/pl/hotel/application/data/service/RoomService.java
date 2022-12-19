@@ -17,4 +17,8 @@ public class RoomService {
 	public Room getRoomByType(RoomType roomType, boolean isBalcony) {
 		return repository.getRoomByType(roomType, isBalcony);
 	}
+	
+	public void updateRoomCount(int free, int reserved, int id) {
+		repository.updateRoomCount(free, reserved, id);
+	}
 }
