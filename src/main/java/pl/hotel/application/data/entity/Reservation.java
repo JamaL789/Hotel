@@ -30,8 +30,8 @@ public class Reservation {
 	private boolean ended;
 	private double fee;
 	private double totalFee;
-	/*@OneToOne
-	private Room room;;*/
+	@OneToOne
+	private Room room;
 	@OneToOne
 	private User roomUser;
 /*	public int getId() {
@@ -83,12 +83,12 @@ public class Reservation {
 	public void setFee(double fee) {
 		this.fee = fee;
 	}
-/*	public Room getRoom() {
+	public Room getRoom() {
 		return room;
 	}
 	public void setRoom(Room room) {
 		this.room = room;
-	}*/
+	}
 	public User getRoomUser() {
 		return roomUser;
 	}

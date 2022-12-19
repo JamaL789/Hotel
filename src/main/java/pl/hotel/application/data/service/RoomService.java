@@ -1,5 +1,7 @@
 package pl.hotel.application.data.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +22,9 @@ public class RoomService {
 	
 	public void updateRoomCount(int free, int reserved, int id) {
 		repository.updateRoomCount(free, reserved, id);
+	}
+	
+	public List<Room> getRooms(){
+		return repository.findAll();
 	}
 }

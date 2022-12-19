@@ -26,7 +26,10 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 
         http.authorizeRequests().requestMatchers(new AntPathRequestMatcher("/images/*.png")).permitAll().and()
         .authorizeRequests().antMatchers("/console/**").permitAll()
-        .and().authorizeRequests().requestMatchers(new AntPathRequestMatcher("/images/*.jpg")).permitAll();;
+        .and().authorizeRequests().requestMatchers(new AntPathRequestMatcher("/images/*.jpg")).permitAll()
+        .and().authorizeRequests().antMatchers("/rooms/**").permitAll()
+        .and().authorizeRequests().antMatchers("/reservations/**").permitAll()
+        .and().authorizeRequests().antMatchers("/newreservation/**").permitAll();
         super.configure(http);
      //   setLoginView(http, LoginView.class, LOGOUT_URL);
         http.csrf().disable();
