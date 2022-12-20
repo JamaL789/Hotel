@@ -11,7 +11,10 @@ import pl.hotel.application.data.entity.Room;
 public interface RoomRepository extends JpaRepository<Room, Integer> {
 
 	@Query("SELECT r FROM Room r WHERE r.roomType = ?1 AND r.balcony = ?2")
-	Room getRoomByType(RoomType roomType, boolean isBalcony);
+	Room getRoomByTypeAndBalcony(RoomType roomType, boolean isBalcony);
+	
+	@Query("SELECT r FROM Room r WHERE r.roomType = ?1")
+	Room getRoomByType(RoomType roomType);
 	
 	@Modifying
 	@Transactional

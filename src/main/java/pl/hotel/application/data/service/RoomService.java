@@ -16,10 +16,12 @@ public class RoomService {
 	    this.repository = repository;
 	}
 	
-	public Room getRoomByType(RoomType roomType, boolean isBalcony) {
-		return repository.getRoomByType(roomType, isBalcony);
+	public Room getRoomByTypeAndBalcony(RoomType roomType, boolean isBalcony) {
+		return repository.getRoomByTypeAndBalcony(roomType, isBalcony);
 	}
-	
+	public Room getRoomByType(RoomType roomType) {
+		return repository.getRoomByType(roomType);
+	}
 	public void updateRoomCount(int free, int reserved, int id) {
 		repository.updateRoomCount(free, reserved, id);
 	}
