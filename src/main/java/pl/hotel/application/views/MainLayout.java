@@ -51,7 +51,7 @@ public class MainLayout extends AppLayout {
             // Use Lumo classnames for various styling
             text.addClassNames("font-medium", "text-m", "whitespace-nowrap");
 
-            link.add(new LineAwesomeIcon(iconClass), text);
+            link.add(text);
             add(link);
         }
 
