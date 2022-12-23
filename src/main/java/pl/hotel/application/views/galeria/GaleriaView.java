@@ -35,10 +35,10 @@ public class GaleriaView extends VerticalLayout {
         setSpacing(false);
         buttons.add(previous, next);
         previous.setEnabled(false);
-        img1.setWidth("800px");
-        img2.setWidth("800px");
-        img3.setWidth("800px");
-        img4.setWidth("800px");
+        img1.setHeight("800px");
+        img2.setHeight("800px");
+        img3.setHeight("800px");
+        img4.setHeight("800px");
         images.add(img1);
         images.add(img2);
         images.add(img3);

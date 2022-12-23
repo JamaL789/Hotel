@@ -21,11 +21,11 @@ public class RoomService {
 	}
 	public Room getRoomByType(RoomType roomType) {
 		return repository.getRoomByType(roomType);
-	}
+	}/*
 	public void updateRoomCount(int free, int reserved, int id) {
 		repository.updateRoomCount(free, reserved, id);
 	}
-	
+	*/
 	public List<Room> getRooms(){
 		return repository.findAll();
 	}

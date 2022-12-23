@@ -21,8 +21,8 @@ public class Room {
     private RoomType roomType;
 	private double price;
 	private boolean balcony;
-	private int amountFree;
-	private int amountReserved;
+//	private int amount;
+//	private int amountReserved;
 	
 	public int getId() {
 		return id;
@@ -41,19 +41,19 @@ public class Room {
 	}
 	public void setPrice(double price) {
 		this.price = price;
+	}/*
+	public int getAmount() {
+		return amount;
 	}
-	public int getAmountFree() {
-		return amountFree;
-	}
-	public void setAmountFree(int amountFree) {
-		this.amountFree = amountFree;
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
 	public int getAmountReserved() {
 		return amountReserved;
 	}
 	public void setAmountReserved(int amountReserved) {
 		this.amountReserved = amountReserved;
-	}
+	}*/
 	public boolean isBalcony() {
 		return balcony;
 	}

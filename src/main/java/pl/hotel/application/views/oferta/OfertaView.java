@@ -3,6 +3,7 @@ package pl.hotel.application.views.oferta;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,7 +29,7 @@ public class OfertaView extends VerticalLayout {
 			+ "Pokój czterosobowy (duży) - 350 zł<br>"
 			+ "Pokój czterosobowy (duży) z balkonem - 400 zł<br>"
 			+ "Apartament (z balkonem) - 500 zł</div>");
-	private H3 roomInfo = new H3(html);
+	private H4 roomInfo = new H4(html);
 	private RouterLink reservation = new RouterLink();
     public OfertaView() {
         setSpacing(false);

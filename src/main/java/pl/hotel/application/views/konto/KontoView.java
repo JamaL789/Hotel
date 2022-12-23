@@ -1,5 +1,7 @@
 package pl.hotel.application.views.konto;
 
+import javax.annotation.security.PermitAll;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
@@ -27,6 +29,7 @@ import pl.hotel.application.views.MainLayout;
 @PageTitle("Konto")
 @Route(value = "konto", layout = MainLayout.class)
 @AnonymousAllowed
+//@PermitAll
 public class KontoView extends VerticalLayout {
 
 	private final UserService userService;

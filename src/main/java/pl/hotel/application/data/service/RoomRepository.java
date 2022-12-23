@@ -15,9 +15,9 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
 	
 	@Query("SELECT r FROM Room r WHERE r.roomType = ?1")
 	Room getRoomByType(RoomType roomType);
-	
+	/*
 	@Modifying
 	@Transactional
 	@Query("UPDATE Room r SET r.amountFree = ?1, r.amountReserved = ?2 WHERE r.id = ?2")
-	void updateRoomCount(int free, int reserved, int id);
+	void updateRoomCount(int free, int reserved, int id);*/
 }
