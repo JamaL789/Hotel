@@ -34,7 +34,7 @@ public class KontoView extends VerticalLayout {
 
 	private final UserService userService;
 	private final ReservationService reservationService;
-	
+
 	private boolean isRegistration = false;
 	private H2 loginInfo = new H2("Zaloguj się:");
 	private H5 registerQuestion = new H5("Nie posiadasz konta?");
@@ -43,39 +43,67 @@ public class KontoView extends VerticalLayout {
 	private Button comeback = new Button("Powrót");
 	private Button logOut = new Button("Wyloguj się");
 	private Button reservationHistory = new Button("Rezerwacje");
+	private Button modifyInfo = new Button("Edytuj informacje");
 	private Grid<Reservation> reservations = new Grid<>(Reservation.class, false);
 	private TextField username = new TextField("Nazwa użytkownika:");
 	private TextField name = new TextField("Imię i nazwisko:");
 	private EmailField email = new EmailField("E-mail:");
 	private PasswordField password = new PasswordField("Hasło:");
 	private PasswordField secondPassword = new PasswordField("Powtórz hasło:");
-
+	private boolean duringEdition = false;
+	private User userEdit = new User();
 	public KontoView(UserService userService, ReservationService reservationService) {
 		this.userService = userService;
 		this.reservationService = reservationService;
 		setSpacing(false);
-		add(loginInfo, username, password, logIn, registerQuestion, register);			
-		reservationHistory.addClickListener(e->{
-			if(reservations.isVisible()) {
-				reservations.setVisible(false);				
-			}else {
+		add(loginInfo, username, password, logIn, registerQuestion, register);
+		reservationHistory.addClickListener(e -> {
+			if (reservations.isVisible()) {
+				reservations.setVisible(false);
+			} else {
 				reservations.setVisible(true);
 			}
 		});
-		reservations.addColumns("reservationNumber", "from", "to", "totalFee");
+		modifyInfo.addClickListener(e -> {
+
+			if (!duringEdition) {
+				userEdit = userService.getUserByNick(username.getValue());
+				email.setEnabled(true);
+				name.setEnabled(true);
+				password.setEnabled(true);
+				username.setEnabled(true);
+				modifyInfo.setText("Zatwierdz zmiany");
+				duringEdition = true;
+			} else {
+				if (email.getValue() != "" && name.getValue() != "" && password.getValue() != ""
+						&& username.getValue() != "") {
+					userService.updateUserInfo(username.getValue(), name.getValue(), password.getValue(),
+							email.getValue(), userEdit.getId());
+					duringEdition = false;
+					email.setEnabled(false);
+					name.setEnabled(false);
+					password.setEnabled(false);
+					username.setEnabled(false);
+					Notification.show("Zaktualizowano informacje!");
+				}else {
+					Notification.show("Wypełnij wszystkie pola!");
+				}
+			}
+		});
+		reservations.addColumns("reservationNumber", "from", "to", "description", "totalFee");
 		logIn.addClickListener(e -> {
 			if (username.getValue() != "" && password.getValue() != "") {
 				User user = userService.getUserByNick(username.getValue());
-				if (!(user==null)) {
+				if (!(user == null)) {
 					if (user.getPassword().equals(password.getValue())) {
 						loginInfo.setText("Twoje dane: ");
 						reservations.setItems(reservationService.getReservationsByUser(user));
-						add(email, name, reservationHistory, reservations, logOut);
+						add(email, name, reservationHistory, reservations, modifyInfo, logOut);
 						reservations.setVisible(false);
-						remove(registerQuestion, register, logIn);						
+						remove(registerQuestion, register, logIn);
 						email.setValue(user.getEmail());
 						email.setEnabled(false);
-						username.setValue(user.getName());
+						username.setValue(user.getUsername());
 						name.setEnabled(false);
 						password.setEnabled(false);
 						username.setEnabled(false);
@@ -83,17 +111,16 @@ public class KontoView extends VerticalLayout {
 					} else {
 						Notification.show("Niepoprawne hasło!");
 					}
-				}else {
-						Notification.show("Nie znaleziono użytkownika!");
-					}
+				} else {
+					Notification.show("Nie znaleziono użytkownika!");
 				}
-			else {
+			} else {
 				Notification.show("Wypełnij oba pola!");
 			}
 
 		});
 		logOut.addClickListener(e -> {
-			remove(email,name, reservationHistory, reservations,logOut);
+			remove(email, name, reservationHistory, reservations, modifyInfo, logOut);
 			add(logIn, registerQuestion, register);
 			email.setEnabled(true);
 			username.setEnabled(true);
@@ -103,11 +130,11 @@ public class KontoView extends VerticalLayout {
 			name.setEnabled(true);
 			loginInfo.setText("Zaloguj się");
 			name.clear();
-			email.clear();			
+			email.clear();
 		});
 		register.addClickListener(e -> {
 			if (isRegistration) {
-				User u = userService.getUserByNick(username.getValue());				
+				User u = userService.getUserByNick(username.getValue());
 				if (u == null && username.getValue() != "" && name.getValue() != "" && email.getValue() != ""
 						&& !(password.getValue().isEmpty()) && password.getValue().equals(secondPassword.getValue())) {
 					User user = new User();
@@ -119,7 +146,7 @@ public class KontoView extends VerticalLayout {
 					isRegistration = false;
 					Notification.show("Konto zostało pomyślnie utworzone!");
 					loginInfo.setText("Zaloguj się:");
-					remove(secondPassword, email, name, comeback, register);				
+					remove(secondPassword, email, name, comeback, register);
 					registerQuestion.setVisible(true);
 					register.setText("Rejestracja");
 					add(logIn, registerQuestion, register);
@@ -130,17 +157,17 @@ public class KontoView extends VerticalLayout {
 				isRegistration = true;
 				loginInfo.setText("Wypełnij poniższe pola:");
 				remove(logIn, registerQuestion, password, register);
-				add(name, email, password, secondPassword, register, comeback);				
-				register.setText("Zarejestruj się");				
+				add(name, email, password, secondPassword, register, comeback);
+				register.setText("Zarejestruj się");
 			}
 		});
 		comeback.addClickListener(e -> {
 			isRegistration = false;
 			loginInfo.setText("Zaloguj się:");
-			remove(secondPassword, email, name, comeback, register);			
+			remove(secondPassword, email, name, comeback, register);
 			registerQuestion.setVisible(true);
-			register.setText("Rejestracja");			
-			add(logIn, registerQuestion, register);			
+			register.setText("Rejestracja");
+			add(logIn, registerQuestion, register);
 		});
 		setSizeFull();
 		// setJustifyContentMode(JustifyContentMode.CENTER);

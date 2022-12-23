@@ -22,12 +22,12 @@ public class OfertaView extends VerticalLayout {
 
 	private H2 info = new H2("Nasza oferta");	
 	private Html html = new Html("<div>Wszystkie ceny obejmują koszt za jedną dobę:<br>"
-			+ "Pokój jednosobowy (mały) - 80 zł<br>"
-			+ "Pokój jednosobowy (mały) z balkonem - 100 zł<br>"
+			+ "Pokój jednoosobowy (mały) - 80 zł<br>"
+			+ "Pokój jednoosobowy (mały) z balkonem - 100 zł<br>"
 			+ "Pokój dwuosobowy (średni) - 160 zł<br>"
 			+ "Pokój dwuosobowy (średni) z balkonem - 200 zł<br>"
-			+ "Pokój czterosobowy (duży) - 350 zł<br>"
-			+ "Pokój czterosobowy (duży) z balkonem - 400 zł<br>"
+			+ "Pokój czteroosobowy (duży) - 350 zł<br>"
+			+ "Pokój czteroosobowy (duży) z balkonem - 400 zł<br>"
 			+ "Apartament (z balkonem) - 500 zł</div>");
 	private H4 roomInfo = new H4(html);
 	private RouterLink reservation = new RouterLink();

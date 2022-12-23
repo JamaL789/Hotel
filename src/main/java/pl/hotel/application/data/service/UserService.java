@@ -39,5 +39,8 @@ public class UserService {
     public int count() {
         return (int) repository.count();
     }
-
+    
+    public void updateUserInfo(String username, String name, String password, String email, int id) {
+    	repository.updateUserInfo(username, name, password, email, id);
+    }
 }

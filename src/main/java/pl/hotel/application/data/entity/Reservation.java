@@ -15,13 +15,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Reservation")
-@IdClass(ReservationId.class)
+//@IdClass(ReservationId.class)
 public class Reservation {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int reservationNumber;		
-	@Id
-	private int positionNumber;
+//	@Id
+//	private int positionNumber;
 	@Column(name="Start_Time")
 	private LocalDate from;
 	@Column(name="End_Time")
@@ -30,6 +31,7 @@ public class Reservation {
 	private boolean ended;
 	private double fee;
 	private double totalFee;
+	private String description;
 	@OneToOne
 	private Room room;
 	@OneToOne
@@ -45,13 +47,13 @@ public class Reservation {
 	}
 	public void setReservationNumber(int reservationNumber) {
 		this.reservationNumber = reservationNumber;
-	}
+	}/*
 	public int getPositionNumber() {
 		return positionNumber;
 	}
 	public void setPositionNumber(int positionNumber) {
 		this.positionNumber = positionNumber;
-	}
+	}*/
 	public LocalDate getFrom() {
 		return from;
 	}
@@ -100,6 +102,12 @@ public class Reservation {
 	}
 	public void setTotalFee(double totalFee) {
 		this.totalFee = totalFee;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	

@@ -21,6 +21,7 @@ public class Room {
     private RoomType roomType;
 	private double price;
 	private boolean balcony;
+	
 //	private int amount;
 //	private int amountReserved;
 	

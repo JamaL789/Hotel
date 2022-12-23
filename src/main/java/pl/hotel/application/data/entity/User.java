@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import pl.hotel.application.data.Role;
 
 @Entity
-@Table(name = "App_User")
+@Table(name = "AppUser")
 public class User{// extends AbstractEntity {
 
 	@Id
