@@ -62,28 +62,29 @@ public class RezerwacjaView extends VerticalLayout {
 	private Button logOut = new Button("Wyloguj się");
 	private Button addToCart = new Button("Dodaj");
 	private Button summary = new Button("Podsumowanie");
-	
+
 	private Checkbox withBalcony = new Checkbox("Z balkonem?");
 	private H3 info = new H3("Zaloguj się, aby dokonać rezerwacji:");
 //	private ComboBox<RoomType> roomTypeCombobox = new ComboBox<>("Pokój:");
 	private ComboBox<String> roomTypeCombobox = new ComboBox<>("Pokój:");
 	private List<Reservation> reservationsInCart = new ArrayList<>();
 	private Grid<Reservation> reservationInCartGrid = new Grid<>(Reservation.class, false);
-	
+
 	private H3 totalFeeInfo = new H3();
 	private int resIdIterator = 1;
 	private double totalFee = 0;
+
 	public RezerwacjaView(ReservationService reservationService, UserService userService, RoomService roomService) {
 		this.reservationService = reservationService;
 		this.userService = userService;
 		this.roomService = roomService;
 		setSpacing(false);
 		setSizeFull();
-/*		List<RoomType> typeList = new ArrayList<>();
-		typeList.add(RoomType.Maly);
-		typeList.add(RoomType.Sredni);
-		typeList.add(RoomType.Duzy);
-		typeList.add(RoomType.Apartament);*/
+		/*
+		 * List<RoomType> typeList = new ArrayList<>(); typeList.add(RoomType.Maly);
+		 * typeList.add(RoomType.Sredni); typeList.add(RoomType.Duzy);
+		 * typeList.add(RoomType.Apartament);
+		 */
 		reservationInCartGrid.addColumns("reservationNumber", "from", "to", "description", "totalFee");
 		List<String> typeList = new ArrayList<>();
 		typeList.add("Mały");
@@ -95,27 +96,28 @@ public class RezerwacjaView extends VerticalLayout {
 		VerticalLayout summaryLayout = new VerticalLayout();
 		summaryLayout.add(reservationInCartGrid, totalFeeInfo, reserve, cancelReservations);
 		summaryLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-		summary.addClickListener(e->{
-			if(reservationsInCart.size()>0) {
+		summary.addClickListener(e -> {
+			if (reservationsInCart.size() > 0) {
 				reservationInCartGrid.setItems(reservationsInCart);
-				
+
 				info.setText("Podsumowanie:");
 				totalFeeInfo.setText("Do zapłaty: " + totalFee);
 				remove(dateFrom, dateTo, name, logOut, cancel, addToCart, summary, roomTypeCombobox, withBalcony);
 				add(summaryLayout);
-			}else {
+			} else {
 				Notification.show("Najpierw dodaj rezerwację!");
 			}
-			
+
 		});
-		cancel.addClickListener(e->{
+		cancel.addClickListener(e -> {
 //			dateFrom.setValue(null);
 //			dateTo.setValue(null);
 			dateFrom.setValue(LocalDate.now());
 			dateTo.setValue(LocalDate.now());
 			withBalcony.setValue(false);
 //			roomTypeCombobox.setValue(null);
-			reservationsInCart.forEach(r->{
+			reservationsInCart.forEach(r -> {
+				roomService.deleteReservationFromRoom(r.getRoom(), r);
 				reservationService.removeReservation(r);
 			});
 			reservationsInCart.clear();
@@ -124,37 +126,38 @@ public class RezerwacjaView extends VerticalLayout {
 		});
 		addToCart.addClickListener(e -> {
 			if (roomTypeCombobox.getValue() != null) {
-				
-		/*		if(roomTypeCombobox.getValue().equals(RoomType.Apartament)){
-					room = roomService.getRoomByType(RoomType.Apartament);
-				}else {
-					room = roomService.getRoomByTypeAndBalcony(roomTypeCombobox.getValue(), withBalcony.getValue());
-				}	*/
+
+				/*
+				 * if(roomTypeCombobox.getValue().equals(RoomType.Apartament)){ room =
+				 * roomService.getRoomByType(RoomType.Apartament); }else { room =
+				 * roomService.getRoomByTypeAndBalcony(roomTypeCombobox.getValue(),
+				 * withBalcony.getValue()); }
+				 */
 				if ((dateFrom.getValue().atStartOfDay().isEqual(LocalDate.now().atStartOfDay())
 						|| dateFrom.getValue().atStartOfDay().isAfter(LocalDate.now().atStartOfDay()))
 						&& dateTo.getValue().atStartOfDay().isAfter(LocalDate.now().atStartOfDay())
-						&& dateTo.getValue().atStartOfDay().isAfter(dateFrom.getValue().atStartOfDay())){
+						&& dateTo.getValue().atStartOfDay().isAfter(dateFrom.getValue().atStartOfDay())) {
 //					Room room = new Room();
-	//				Boolean x = withBalcony.getValue();
+					// Boolean x = withBalcony.getValue();
 					List<Reservation> reservations = reservationService.getReservations();
-				//	List<Room> rooms = reservationService.getReservations();
+					// List<Room> rooms = reservationService.getReservations();
 					Room maybeRoom = new Room();
 					RoomType roomType = getRoomType(roomTypeCombobox.getValue());
-					if(reservations.size()==0) {
-						
+					if (reservations.size() == 0) {
+
 						maybeRoom = roomService.getRoomByTypeAndBalcony(roomType, withBalcony.getValue());
-					}else {
-						List<Room> rooms = reservationService.getReservations()
-								.stream()
-								.map(r->r.getRoom())
-								.filter(r->r.getRoomType().equals(roomType)
-										&& r.isBalcony()==withBalcony.getValue())
-								.collect(Collectors.toList());
-						maybeRoom = findARoom(rooms, reservationService, dateFrom, dateTo);
+					} else {
+						/*
+						 * List<Room> rooms = reservationService.getReservations() .stream()
+						 * .map(r->r.getRoom()) .filter(r->r.getRoomType().equals(roomType) //TUTAJ DO
+						 * ZMIANY && r.isBalcony()==withBalcony.getValue())
+						 * .collect(Collectors.toList()); maybeRoom = findARoom(rooms,
+						 * reservationService, dateFrom, dateTo);
+						 */
+						maybeRoom = newFindARoom(roomService, withBalcony, dateFrom, dateTo, roomType);
 					}
-							
-					
-					if(maybeRoom != null) {
+
+					if (maybeRoom != null) {
 						Reservation res = new Reservation();
 						User u = userService.getUserByNick(username.getValue());
 						res.setEnded(false);
@@ -176,23 +179,24 @@ public class RezerwacjaView extends VerticalLayout {
 						List<Reservation> reservs = reservationService.getReservations();
 						Reservation ress = reservs.stream().max(Comparator.comparing(Reservation::getReservationNumber))
 								.orElse(null);// collect(Collectors.toList());
-						if(ress != null) {
+						if (ress != null) {
 							res.setReservationNumber(ress.getReservationNumber() + resIdIterator);
-						}else {
+						} else {
 							res.setReservationNumber(0);
 						}
 						res.setRoom(maybeRoom);
 						res.setRoomUser(u);
-		//				res.setPositionNumber(0);
+						roomService.addReservationToRoom(maybeRoom, res);
+						// res.setPositionNumber(0);
 						reservationsInCart.add(res);
-						reservationService.addReservation(res);
+//						reservationService.addReservation(res);
 						Notification.show("Dodano rezerwację do koszyka. Termin: " + dateFrom.getValue().toString());
 						maybeRoom = null;
 						resIdIterator++;
-					}else {
+					} else {
 						Notification.show("Brak wolnych pokojów tego typu!");
 					}
-					
+
 				} else {
 					Notification.show("Wybierz poprawny termin rozpoczęcia i zakończenia rezerwacji!");
 				}
@@ -209,7 +213,8 @@ public class RezerwacjaView extends VerticalLayout {
 						name.setValue(user.getName());
 						name.setEnabled(false);
 						remove(logIn, password, username);
-						add(name, cancel, dateFrom, dateTo, roomTypeCombobox, withBalcony, addToCart, summary, cancel, logOut);
+						add(name, cancel, dateFrom, dateTo, roomTypeCombobox, withBalcony, addToCart, summary, cancel,
+								logOut);
 						info.setText("Wypelnij ponizsze pola, aby dokonac rezerwacji: ");
 					} else {
 						Notification.show("Niepoprawne hasło!");
@@ -241,8 +246,9 @@ public class RezerwacjaView extends VerticalLayout {
 			dateTo.setValue(LocalDate.now());
 			withBalcony.setValue(false);
 //			roomTypeCombobox.setValue(null);
-			reservationsInCart.forEach(r->{
-				reservationService.removeReservation(r);
+			reservationsInCart.forEach(res -> {
+				roomService.deleteReservationFromRoom(res.getRoom(), res);
+				reservationService.removeReservation(res);
 			});
 			reservationsInCart.clear();
 			totalFee = 0;
@@ -253,21 +259,20 @@ public class RezerwacjaView extends VerticalLayout {
 		});
 		roomTypeCombobox.addValueChangeListener(e -> {
 			Room r = new Room();
-			if(e.getValue().equals("Apartament")){
+			if (e.getValue().equals("Apartament")) {
 				r = roomService.getRoomByType(RoomType.APARTAMENT);
-			}else {
+			} else {
 				RoomType roomType = getRoomType(roomTypeCombobox.getValue());
 				r = roomService.getRoomByTypeAndBalcony(roomType, withBalcony.getValue());
-			}		
-			if(e.getOldValue()!=null && e.getOldValue().equals("Apartament") && !(e.getValue().equals("Apartament"))) {
+			}
+			if (e.getOldValue() != null && e.getOldValue().equals("Apartament")
+					&& !(e.getValue().equals("Apartament"))) {
 				withBalcony.setValue(false);
 			}
-		/*	
-			if (r.getAmount() > 0) {
-				Notification.show("Pokój tego typu jest dostępny!");
-			} else {
-				Notification.show("Brak dostępnych pokojów tego typu");
-			}*/
+			/*
+			 * if (r.getAmount() > 0) { Notification.show("Pokój tego typu jest dostępny!");
+			 * } else { Notification.show("Brak dostępnych pokojów tego typu"); }
+			 */
 			if (e.getValue().equals("Apartament")) {
 				withBalcony.setValue(true);
 				withBalcony.setEnabled(false);
@@ -288,21 +293,21 @@ public class RezerwacjaView extends VerticalLayout {
 //			dateFrom.clear();
 //			dateTo.clear();
 			reservationsInCart.clear();
-			
+
 			dateFrom.setValue(LocalDate.now());
 			dateTo.setValue(LocalDate.now());
 //			roomTypeCombobox.setValue(null);
 			withBalcony.setValue(false);
-			
+
 			totalFee = 0;
 		});
 		// setJustifyContentMode(JustifyContentMode.CENTER);
 		setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		getStyle().set("text-align", "center");
 	}
-	
+
 	private RoomType getRoomType(String type) {
-		switch(type) {
+		switch (type) {
 		case "Mały":
 			return RoomType.MALY;
 		case "Średni":
@@ -312,57 +317,80 @@ public class RezerwacjaView extends VerticalLayout {
 		case "Apartament":
 			return RoomType.APARTAMENT;
 		}
-		return null;		 
+		return null;
 	}
-	private Room findARoom(List<Room> rooms, ReservationService resService,
-			DatePicker dateFrom, DatePicker dateTo){
+
+	private Room newFindARoom(RoomService roomService, Checkbox balcony, DatePicker dateFrom, DatePicker dateTo,
+			RoomType roomType) {
+		List<Room> rooms = roomService.getRooms().stream()
+				.filter(r -> r.getRoomType().equals(roomType) && r.isBalcony() == balcony.getValue())
+				.collect(Collectors.toList());
+		for (Room room : rooms) {
+			boolean roomFound = true;
+			List<Reservation> reservations = new ArrayList<>(room.getReservations());
+			if (reservations.size() == 0) {
+				return room;
+			}
+			for (Reservation res : reservations) {
+				if ((res.getFrom().isBefore(dateFrom.getValue()) && res.getTo().isAfter(dateTo.getValue()))
+						|| (res.getFrom().isAfter(dateFrom.getValue()) && res.getFrom().isBefore(dateTo.getValue()))
+						|| (res.getTo().isAfter(dateFrom.getValue()) && res.getTo().isBefore(dateTo.getValue()))
+						|| (res.getFrom().atStartOfDay().isEqual(dateFrom.getValue().atStartOfDay()))
+						|| (res.getTo().atStartOfDay().isEqual(dateTo.getValue().atStartOfDay()))) {
+					// pokoj nie jest wolny
+					roomFound = false;
+					break;
+				}
+			}
+			if (roomFound) {
+				return room;
+			}
+		}
+//		List<Reservation> reservations = rooms.stream().map(e->e.getre)
+
+		return null; //brak pokoju
+	}
+
+/*	private Room findARoom(List<Room> rooms, ReservationService resService, DatePicker dateFrom, DatePicker dateTo) {
 //		Room[] readyRoom = {new Room()};
 //		Boolean[] arr = {false};
-		
-		for(Room room : rooms) {
+
+		for (Room room : rooms) {
 			List<Reservation> reservations = resService.getReservationsByRoom(room);
 			boolean roomFound = true;
-			for(Reservation res : reservations) {
+			for (Reservation res : reservations) {
 				boolean check1 = res.getFrom().isBefore(dateFrom.getValue()) && res.getTo().isAfter(dateTo.getValue());
-				boolean check2 = res.getFrom().isAfter(dateFrom.getValue())&& res.getFrom().isBefore(dateTo.getValue());
+				boolean check2 = res.getFrom().isAfter(dateFrom.getValue())
+						&& res.getFrom().isBefore(dateTo.getValue());
 				boolean check3 = res.getTo().isAfter(dateFrom.getValue()) && res.getTo().isBefore(dateTo.getValue());
 				boolean check4 = res.getFrom().atStartOfDay().isEqual(dateFrom.getValue().atStartOfDay());
 				boolean check5 = res.getTo().atStartOfDay().isEqual(dateTo.getValue().atStartOfDay());
-				System.out.println("Check1: " + check1 + " od: " + res.getFrom() +" do: " + res.getTo() + "\n" + "Check2: " + check2 + "\n" 
-				+ "Check3: " + check3 + "\n" + "Check4: " + check4+ "\n" + "Check5: " + check5);
-				if(//!(res.isEnded()) && 
-						(res.getFrom().isBefore(dateFrom.getValue()) && res.getTo().isAfter(dateTo.getValue())) ||
-						(res.getFrom().isAfter(dateFrom.getValue())&& res.getFrom().isBefore(dateTo.getValue())) ||
-						(res.getTo().isAfter(dateFrom.getValue()) && res.getTo().isBefore(dateTo.getValue())) ||
-						(res.getFrom().atStartOfDay().isEqual(dateFrom.getValue().atStartOfDay())) || 
-						(res.getTo().atStartOfDay().isEqual(dateTo.getValue().atStartOfDay()))){
-					//brak pokoju
+				System.out.println("Check1: " + check1 + " od: " + res.getFrom() + " do: " + res.getTo() + "\n"
+						+ "Check2: " + check2 + "\n" + "Check3: " + check3 + "\n" + "Check4: " + check4 + "\n"
+						+ "Check5: " + check5);
+				if ((res.getFrom().isBefore(dateFrom.getValue()) && res.getTo().isAfter(dateTo.getValue()))
+						|| (res.getFrom().isAfter(dateFrom.getValue()) && res.getFrom().isBefore(dateTo.getValue()))
+						|| (res.getTo().isAfter(dateFrom.getValue()) && res.getTo().isBefore(dateTo.getValue()))
+						|| (res.getFrom().atStartOfDay().isEqual(dateFrom.getValue().atStartOfDay()))
+						|| (res.getTo().atStartOfDay().isEqual(dateTo.getValue().atStartOfDay()))) {
+					// brak pokoju
 					roomFound = false;
 					break;
-				}//else {
-	//				readyRoom[0] = room;
-	//				arr[0] = true;
-			//		return room; 
-			//	}
+				}
 			}
-			if(roomFound) {
+			if (roomFound) {
 				return room;
 			}
-		}/*
-		rooms.stream().forEach(room->{
-			List<Reservation> reservations = resService.getReservationsByRoom(room);
-			reservations.forEach(res->{
-				if(!(res.isEnded()) && 
-						((res.getFrom().isBefore(dateFrom.getValue()) && res.getTo().isAfter(dateTo.getValue())) ||
-						(res.getFrom().isAfter(dateFrom.getValue())&& res.getFrom().isBefore(dateTo.getValue())))) {
-				}else {
-					readyRoom[0] = room;
-					arr[0] = true;
-					return;
-				}
-			});
-		});*/
-		return null;
-		
-	}
+		} /*
+			 * rooms.stream().forEach(room->{ List<Reservation> reservations =
+			 * resService.getReservationsByRoom(room); reservations.forEach(res->{
+			 * if(!(res.isEnded()) && ((res.getFrom().isBefore(dateFrom.getValue()) &&
+			 * res.getTo().isAfter(dateTo.getValue())) ||
+			 * (res.getFrom().isAfter(dateFrom.getValue())&&
+			 * res.getFrom().isBefore(dateTo.getValue())))) { }else { readyRoom[0] = room;
+			 * arr[0] = true; return; } }); });
+			 */
+	//	return null;
+
+//	}
 }
