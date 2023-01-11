@@ -52,11 +52,13 @@ public class KontoView extends VerticalLayout {
 	private PasswordField secondPassword = new PasswordField("Powtórz hasło:");
 	private boolean duringEdition = false;
 	private User userEdit = new User();
+	
 	public KontoView(UserService userService, ReservationService reservationService) {
 		this.userService = userService;
 		this.reservationService = reservationService;
 		setSpacing(false);
 		add(loginInfo, username, password, logIn, registerQuestion, register);
+		// przycisk od ustawiania widocznosci rezerwacji
 		reservationHistory.addClickListener(e -> {
 			if (reservations.isVisible()) {
 				reservations.setVisible(false);
@@ -64,6 +66,7 @@ public class KontoView extends VerticalLayout {
 				reservations.setVisible(true);
 			}
 		});
+		// przycisk od modyfikacji informacji o userze
 		modifyInfo.addClickListener(e -> {
 
 			if (!duringEdition) {
@@ -91,6 +94,7 @@ public class KontoView extends VerticalLayout {
 			}
 		});
 		reservations.addColumns("reservationNumber", "from", "to", "description", "totalFee");
+		// logowanie
 		logIn.addClickListener(e -> {
 			if (username.getValue() != "" && password.getValue() != "") {
 				User user = userService.getUserByNick(username.getValue());
@@ -119,6 +123,7 @@ public class KontoView extends VerticalLayout {
 			}
 
 		});
+		// wylogowywanie
 		logOut.addClickListener(e -> {
 			remove(email, name, reservationHistory, reservations, modifyInfo, logOut);
 			add(logIn, registerQuestion, register);
@@ -132,6 +137,7 @@ public class KontoView extends VerticalLayout {
 			name.clear();
 			email.clear();
 		});
+		// rejestraca
 		register.addClickListener(e -> {
 			if (isRegistration) {
 				User u = userService.getUserByNick(username.getValue());
@@ -161,6 +167,7 @@ public class KontoView extends VerticalLayout {
 				register.setText("Zarejestruj się");
 			}
 		});
+		// powrót z ekranu rejestracji
 		comeback.addClickListener(e -> {
 			isRegistration = false;
 			loginInfo.setText("Zaloguj się:");

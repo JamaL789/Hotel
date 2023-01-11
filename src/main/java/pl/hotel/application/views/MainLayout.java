@@ -20,8 +20,14 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import java.io.ByteArrayInputStream;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
+
+import pl.hotel.application.data.entity.Reservation;
 import pl.hotel.application.data.entity.User;
+import pl.hotel.application.data.service.ReservationService;
 import pl.hotel.application.data.service.SecurityService;
 import pl.hotel.application.security.AuthenticatedUser;
 import pl.hotel.application.views.galeria.GaleriaView;
@@ -81,14 +87,31 @@ public class MainLayout extends AppLayout {
 
     private AuthenticatedUser authenticatedUser;
     private AccessAnnotationChecker accessChecker;
+    private final ReservationService reservationService;
 //    private final SecurityService securityService;
 //    private boolean userLogged = false;
-    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
+    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker,
+    		ReservationService reservationService) {
     //		SecurityService securityService) {
   //      this.securityService = securityService;
 		this.authenticatedUser = authenticatedUser;
         this.accessChecker = accessChecker;
+        this.reservationService = reservationService;
   //      Button logout = new Button("Log out", e -> securityService.logout()); 
+        // aktualizacja bazy danych
+        List<Reservation> reservations = reservationService.getReservations();
+        reservations.forEach(r->{
+        	if((r.getFrom().atStartOfDay().isEqual(LocalDate.now().atStartOfDay()) && r.isStarted()==false)||
+        			(r.getFrom().isAfter(LocalDate.now())&& r.isStarted()==false)){
+        		r.setStarted(true);
+        		reservationService.addReservation(r);
+        	}
+        	if((r.getTo().atStartOfDay().isEqual(LocalDate.now().atStartOfDay()) && r.isEnded()==false)||
+        			(r.getTo().isBefore(LocalDate.now())&& r.isEnded()==false)) {
+        		r.setEnded(true);
+        		reservationService.addReservation(r);
+        	}
+        });
         
         addToNavbar(createHeaderContent());
     }
@@ -157,7 +180,6 @@ public class MainLayout extends AppLayout {
             }
 
         }
- //       list.add(logout);
         header.add(layout, nav);
         header.getElement().getStyle().set("align-items", "center");
         header.getElement().getStyle().set("background-color", "black");
@@ -173,22 +195,8 @@ public class MainLayout extends AppLayout {
     	MenuItemInfo rezerwacja = new MenuItemInfo("Rezerwacja", "", RezerwacjaView.class);
     	MenuItemInfo login = new MenuItemInfo("Zaloguj się", "", LoginView.class);
     	MenuItemInfo[] menu = {hotel, oferta, galeria, kontakt, konto, rezerwacja, login};
-    	//hotel.getElement().getStyle().set("align-items", "center");
     	return menu;
-/*        return new MenuItemInfo[]{ //
-                new MenuItemInfo("Hotel", "", HotelView.class), //
 
-                new MenuItemInfo("Oferta", "", OfertaView.class), //
-
-                new MenuItemInfo("Galeria", "", GaleriaView.class), //
-
-                new MenuItemInfo("Kontakt", "", KontaktView.class), //
-
-                new MenuItemInfo("Konto", "", KontoView.class), //
-
-                new MenuItemInfo("Rezerwacja", "", RezerwacjaView.class), //
-
-        };*/
     }
 
 }

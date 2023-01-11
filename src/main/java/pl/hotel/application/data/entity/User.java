@@ -12,7 +12,7 @@ import pl.hotel.application.data.Role;
 
 @Entity
 @Table(name = "AppUser")
-public class User{// extends AbstractEntity {
+public class User{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -23,16 +23,6 @@ public class User{// extends AbstractEntity {
     private String password;
     private String email;
     
- /*   @Enumerated(EnumType.STRING)
-    private Role role;*/
-/*    @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Role> roles;
-    @Lob
-    @Column(length = 1000000)
-    private byte[] profilePicture;
-*/
-    
     public String getUsername() {
         return username;
     }
@@ -42,13 +32,6 @@ public class User{// extends AbstractEntity {
 	public void setId(int id) {
 		this.id = id;
 	}
-	/*
-	public Role getRole() {
-		return role;
-	}
-	public void setRole(Role role) {
-		this.role = role;
-	}*/
 	public void setUsername(String username) {
         this.username = username;
     }

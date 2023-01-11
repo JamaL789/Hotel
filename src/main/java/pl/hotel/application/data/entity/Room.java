@@ -29,9 +29,7 @@ public class Room {
 	@OneToMany(fetch = FetchType.EAGER,
 			cascade= {CascadeType.ALL})
 	private Set<Reservation> reservations;
-//	private int amount;
-//	private int amountReserved;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -49,19 +47,7 @@ public class Room {
 	}
 	public void setPrice(double price) {
 		this.price = price;
-	}/*
-	public int getAmount() {
-		return amount;
 	}
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
-	public int getAmountReserved() {
-		return amountReserved;
-	}
-	public void setAmountReserved(int amountReserved) {
-		this.amountReserved = amountReserved;
-	}*/
 	public boolean isBalcony() {
 		return balcony;
 	}

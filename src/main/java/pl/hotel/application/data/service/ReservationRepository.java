@@ -10,10 +10,10 @@ import pl.hotel.application.data.entity.Room;
 import pl.hotel.application.data.entity.User;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
-
+	// zwrot rezerwacji danego użytkownika
 	@Query("SELECT r FROM Reservation r WHERE r.roomUser = ?1")
 	List<Reservation> findReservationsByUser(User user);
-	
+	// zwrot rezerwacji danego pokoju
 	@Query("SELECT r FROM Reservation r WHERE r.room = ?1")
 	List<Reservation> findReservationsByRoom(Room room);
 }

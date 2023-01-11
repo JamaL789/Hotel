@@ -9,15 +9,10 @@ import pl.hotel.application.data.RoomType;
 import pl.hotel.application.data.entity.Room;
 
 public interface RoomRepository extends JpaRepository<Room, Integer> {
-
+	// zwrot pokoju na podstawie rodzaju i balkonu
 	@Query("SELECT r FROM Room r WHERE r.roomType = ?1 AND r.balcony = ?2")
 	Room getRoomByTypeAndBalcony(RoomType roomType, boolean isBalcony);
-	
+	// zwrot pokoju na podstawie rodzaju
 	@Query("SELECT r FROM Room r WHERE r.roomType = ?1")
 	Room getRoomByType(RoomType roomType);
-	/*
-	@Modifying
-	@Transactional
-	@Query("UPDATE Room r SET r.amountFree = ?1, r.amountReserved = ?2 WHERE r.id = ?2")
-	void updateRoomCount(int free, int reserved, int id);*/
 }

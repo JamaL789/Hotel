@@ -31,15 +31,7 @@ public class UserService {
     public void delete(int id) {
         repository.deleteById(id);
     }
-
-    public Page<User> list(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    public int count() {
-        return (int) repository.count();
-    }
-    
+  
     public void updateUserInfo(String username, String name, String password, String email, int id) {
     	repository.updateUserInfo(username, name, password, email, id);
     }

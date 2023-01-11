@@ -11,11 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import pl.hotel.application.data.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-
- //   User findByUsername(String username);
-//	@Query("SELECT u FROM App_User u WHERE u.username = ?1")
-	User findByUsername(String username);
 	
+	User findByUsername(String username);
+	// aktualizacja informacji o użytkowniku
 	@Modifying
 	@Transactional
 	@Query("UPDATE User u SET u.username = ?1, u.name = ?2, u.password = ?3, u.email = ?4 WHERE u.id = ?5")
