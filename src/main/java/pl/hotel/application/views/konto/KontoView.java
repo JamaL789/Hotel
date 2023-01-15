@@ -87,6 +87,7 @@ public class KontoView extends VerticalLayout {
 					name.setEnabled(false);
 					password.setEnabled(false);
 					username.setEnabled(false);
+					modifyInfo.setText("Edytuj informacje");
 					Notification.show("Zaktualizowano informacje!");
 				}else {
 					Notification.show("Wypełnij wszystkie pola!");

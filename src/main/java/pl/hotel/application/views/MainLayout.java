@@ -102,7 +102,7 @@ public class MainLayout extends AppLayout {
         List<Reservation> reservations = reservationService.getReservations();
         reservations.forEach(r->{
         	if((r.getFrom().atStartOfDay().isEqual(LocalDate.now().atStartOfDay()) && r.isStarted()==false)||
-        			(r.getFrom().isAfter(LocalDate.now())&& r.isStarted()==false)){
+        			(r.getFrom().isBefore(LocalDate.now())&& r.isStarted()==false)){
         		r.setStarted(true);
         		reservationService.addReservation(r);
         	}
