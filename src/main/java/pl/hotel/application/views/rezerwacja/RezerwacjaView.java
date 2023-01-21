@@ -65,7 +65,6 @@ public class RezerwacjaView extends VerticalLayout {
 
 	private Checkbox withBalcony = new Checkbox("Z balkonem?");
 	private H3 info = new H3("Zaloguj się, aby dokonać rezerwacji:");
-//	private ComboBox<RoomType> roomTypeCombobox = new ComboBox<>("Pokój:");
 	private ComboBox<String> roomTypeCombobox = new ComboBox<>("Pokój:");
 	private List<Reservation> reservationsInCart = new ArrayList<>();
 	private Grid<Reservation> reservationInCartGrid = new Grid<>(Reservation.class, false);
@@ -103,16 +102,13 @@ public class RezerwacjaView extends VerticalLayout {
 			} else {
 				Notification.show("Najpierw dodaj rezerwację!");
 			}
-
 		});
 		// anulowanie wszystkich rezerwacji w ekranie rezerwowania
 		cancel.addClickListener(e -> {
-//			dateFrom.setValue(null);
-//			dateTo.setValue(null);
+
 			dateFrom.setValue(LocalDate.now());
 			dateTo.setValue(LocalDate.now());
 			withBalcony.setValue(false);
-//			roomTypeCombobox.setValue(null);
 			reservationsInCart.forEach(r -> {
 				roomService.deleteReservationFromRoom(r.getRoom(), r);
 				reservationService.removeReservation(r);
@@ -168,7 +164,6 @@ public class RezerwacjaView extends VerticalLayout {
 						res.setRoomUser(u);
 						roomService.addReservationToRoom(maybeRoom, res);
 						reservationsInCart.add(res);
-//						reservationService.addReservation(res);
 						Notification.show("Dodano rezerwację do koszyka. Termin: " + dateFrom.getValue().toString());
 						maybeRoom = null;
 						resIdIterator++;
@@ -268,7 +263,6 @@ public class RezerwacjaView extends VerticalLayout {
 
 			totalFee = 0;
 		});
-		// setJustifyContentMode(JustifyContentMode.CENTER);
 		setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		getStyle().set("text-align", "center");
 	}
@@ -315,5 +309,4 @@ public class RezerwacjaView extends VerticalLayout {
 		}
 		return null; //brak pokoju
 	}
-
 }

@@ -43,9 +43,6 @@ import pl.hotel.application.views.rezerwacja.RezerwacjaView;
  */
 public class MainLayout extends AppLayout {
 
-    /**
-     * A simple navigation item component, based on ListItem element.
-     */
     public static class MenuItemInfo extends ListItem {
 
         private final Class<? extends Component> view;
@@ -53,11 +50,9 @@ public class MainLayout extends AppLayout {
         public MenuItemInfo(String menuTitle, String iconClass, Class<? extends Component> view) {
             this.view = view;
             RouterLink link = new RouterLink();
-            // Use Lumo classnames for various styling
             link.addClassNames("flex", "gap-xs", "h-m", "items-center", "px-s", "text-body");
             link.setRoute(view);
             Span text = new Span(menuTitle);
-            // Use Lumo classnames for various styling
             text.addClassNames("font-medium", "text-m", "whitespace-nowrap");
 
             link.add(text);
@@ -68,10 +63,6 @@ public class MainLayout extends AppLayout {
             return view;
         }
 
-        /**
-         * Simple wrapper to create icons using LineAwesome iconset. See
-         * https://icons8.com/line-awesome
-         */
         @NpmPackage(value = "line-awesome", version = "1.3.0")
         public static class LineAwesomeIcon extends Span {
             public LineAwesomeIcon(String lineawesomeClassnames) {
@@ -84,20 +75,15 @@ public class MainLayout extends AppLayout {
         }
 
     }
-
     private AuthenticatedUser authenticatedUser;
     private AccessAnnotationChecker accessChecker;
     private final ReservationService reservationService;
-//    private final SecurityService securityService;
-//    private boolean userLogged = false;
+
     public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker,
     		ReservationService reservationService) {
-    //		SecurityService securityService) {
-  //      this.securityService = securityService;
 		this.authenticatedUser = authenticatedUser;
         this.accessChecker = accessChecker;
         this.reservationService = reservationService;
-  //      Button logout = new Button("Log out", e -> securityService.logout()); 
         // aktualizacja bazy danych
         List<Reservation> reservations = reservationService.getReservations();
         reservations.forEach(r->{
@@ -118,58 +104,19 @@ public class MainLayout extends AppLayout {
 
     private Component createHeaderContent(){//Button logout) {
         Header header = new Header();
-        header.addClassNames("box-border", "flex", "flex-col", "w-full");
+        header.addClassNames("box-border", "flex", "flex-col", "w-full");								
 
         Div layout = new Div();
         layout.addClassNames("flex", "items-center", "px-l");
-//        H1 appName = new H1("Hotel");
-//        appName.addClassNames("my-m", "me-auto", "text-l");
-//        layout.add(appName);
 
-/*        Optional<User> maybeUser = authenticatedUser.get();
-        if (maybeUser.isPresent()) {
-            User user = maybeUser.get();
-
-            Avatar avatar = new Avatar(user.getName());
-            StreamResource resource = new StreamResource("profile-pic",
-                    () -> new ByteArrayInputStream(user.getProfilePicture()));
-            avatar.setImageResource(resource);
-            avatar.setThemeName("xsmall");
-            avatar.getElement().setAttribute("tabindex", "-1");
-
-            MenuBar userMenu = new MenuBar();
-            userMenu.setThemeName("tertiary-inline contrast");
-
-            MenuItem userName = userMenu.addItem("");
-            Div div = new Div();
-            div.add(avatar);
-            div.add(user.getName());
-            div.add(new Icon("lumo", "dropdown"));
-            div.getElement().getStyle().set("display", "flex");
-            div.getElement().getStyle().set("align-items", "center");
-            div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
-            userName.add(div);
-            userName.getSubMenu().addItem("Sign out", e -> {
-                authenticatedUser.logout();
-            });
-
-            layout.add(userMenu);
-        } else {
-            Anchor loginLink = new Anchor("login", "Sign in");
-            layout.add(loginLink);
-        }
-*/
         MenuBar userMenu = new MenuBar();
         userMenu.setThemeName("tertiary-inline contrast");
         MenuItem userName = userMenu.addItem("");
         Div div = new Div();
         layout.add(userMenu);
-//        Anchor loginLink = new Anchor("login", "Sign in");
-//        layout.add(loginLink);
         Nav nav = new Nav();
         nav.addClassNames("flex", "overflow-auto", "px-m", "py-xs");
 
-        // Wrap the links in a list; improves accessibility
         UnorderedList list = new UnorderedList();
         list.addClassNames("flex", "gap-s", "list-none", "m-0", "p-0");
         nav.add(list);
@@ -178,7 +125,6 @@ public class MainLayout extends AppLayout {
             if (accessChecker.hasAccess(menuItem.getView())) {
                 list.add(menuItem);
             }
-
         }
         header.add(layout, nav);
         header.getElement().getStyle().set("align-items", "center");
@@ -196,7 +142,5 @@ public class MainLayout extends AppLayout {
     	MenuItemInfo login = new MenuItemInfo("Zaloguj się", "", LoginView.class);
     	MenuItemInfo[] menu = {hotel, oferta, galeria, kontakt, konto, rezerwacja, login};
     	return menu;
-
     }
-
 }

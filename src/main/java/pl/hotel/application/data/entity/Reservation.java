@@ -12,17 +12,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name = "Reservation")
-//@IdClass(ReservationId.class)
 public class Reservation {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int reservationNumber;		
-//	@Id
-//	private int positionNumber;
+
 	@Column(name="Start_Time")
 	private LocalDate from;
 	@Column(name="End_Time")
@@ -32,32 +32,20 @@ public class Reservation {
 	private double fee;
 	private double totalFee;
 	private String description;
+	@JsonBackReference 
 	@OneToOne
 	private Room room;
 	@OneToOne
 	private User roomUser;
-/*	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}*/
 	public int getReservationNumber() {
 		return reservationNumber;
 	}
 	public void setReservationNumber(int reservationNumber) {
 		this.reservationNumber = reservationNumber;
-	}/*
-	public int getPositionNumber() {
-		return positionNumber;
 	}
-	public void setPositionNumber(int positionNumber) {
-		this.positionNumber = positionNumber;
-	}*/
 	public LocalDate getFrom() {
 		return from;
-	}
-	
+	}	
 	public void setFrom(LocalDate from) {
 		this.from = from;
 	}
@@ -70,7 +58,7 @@ public class Reservation {
 	public boolean isStarted() {
 		return started;
 	}
-	public void setStarted(boolean started) {
+	public void setStarted(boolean started) {					
 		this.started = started;
 	}
 	public boolean isEnded() {

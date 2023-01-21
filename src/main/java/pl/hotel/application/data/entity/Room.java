@@ -13,12 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import pl.hotel.application.data.RoomType;
 
 @Entity
 @Table(name = "Room")
-public class Room {
-	
+public class Room {	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;	
@@ -26,6 +27,7 @@ public class Room {
     private RoomType roomType;
 	private double price;
 	private boolean balcony;
+	@JsonManagedReference
 	@OneToMany(fetch = FetchType.EAGER,
 			cascade= {CascadeType.ALL})
 	private Set<Reservation> reservations;
@@ -59,6 +61,5 @@ public class Room {
 	}
 	public void setReservations(Set<Reservation> reservations) {
 		this.reservations = reservations;
-	}
-	
+	}	
 }

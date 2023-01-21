@@ -47,7 +47,7 @@ public class GaleriaView extends VerticalLayout {
         img1.setVisible(true);
         img2.setVisible(false);
         img3.setVisible(false);
-        img4.setVisible(false);
+        img4.setVisible(false);													
         
         previous.addClickListener(e->{
         	if(img2.isVisible()) {
@@ -84,7 +84,6 @@ public class GaleriaView extends VerticalLayout {
         });
         add(buttons);
         setSizeFull();
-  //      setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }

@@ -16,8 +16,7 @@ public class User{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-	
+	private int id;	
     private String username;
     private String name;
     private String password;
@@ -53,6 +52,4 @@ public class User{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-
 }

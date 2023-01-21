@@ -16,6 +16,7 @@ import pl.hotel.application.data.entity.Room;
 import pl.hotel.application.data.service.ReservationService;
 import pl.hotel.application.data.service.RoomService;
 
+@RequestMapping("/api")
 @RestController
 public class HotelController {
 

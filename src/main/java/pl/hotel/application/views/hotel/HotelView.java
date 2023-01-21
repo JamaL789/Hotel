@@ -24,8 +24,7 @@ public class HotelView extends VerticalLayout {
         img.setHeight("768px");
         add(info);
         add(img);
-    //    setSizeFull();
-   //     setJustifyContentMode(JustifyContentMode.CENTER);
+        setSizeFull();
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }

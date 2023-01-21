@@ -29,7 +29,6 @@ import pl.hotel.application.views.MainLayout;
 @PageTitle("Konto")
 @Route(value = "konto", layout = MainLayout.class)
 @AnonymousAllowed
-//@PermitAll
 public class KontoView extends VerticalLayout {
 
 	private final UserService userService;
@@ -138,7 +137,7 @@ public class KontoView extends VerticalLayout {
 			name.clear();
 			email.clear();
 		});
-		// rejestraca
+		// rejestracja
 		register.addClickListener(e -> {
 			if (isRegistration) {
 				User u = userService.getUserByNick(username.getValue());

@@ -34,6 +34,7 @@ public class OfertaView extends VerticalLayout {
 	private RouterLink reservation = new RouterLink();
     public OfertaView() {
         setSpacing(false);
+        reservation.getStyle().set("font-size", "24px");
         add(info, roomInfo);
         info.getStyle().set("text-align", "center");
         roomInfo.getStyle().set("text-align", "left");
@@ -42,9 +43,6 @@ public class OfertaView extends VerticalLayout {
         reservation.addClassNames("flex", "gap-xs", "h-m", "items-center", "px-s", "text-body");
     	add(reservation);
         setSizeFull();
- //       setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-   //     getStyle().set("text-align", "center");
     }
-
 }
