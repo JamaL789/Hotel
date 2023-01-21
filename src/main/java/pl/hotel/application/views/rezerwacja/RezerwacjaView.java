@@ -108,7 +108,6 @@ public class RezerwacjaView extends VerticalLayout {
 
 			dateFrom.setValue(LocalDate.now());
 			dateTo.setValue(LocalDate.now());
-			withBalcony.setValue(false);
 			reservationsInCart.forEach(r -> {
 				roomService.deleteReservationFromRoom(r.getRoom(), r);
 				reservationService.removeReservation(r);
@@ -129,7 +128,8 @@ public class RezerwacjaView extends VerticalLayout {
 					Room maybeRoom = new Room();
 					RoomType roomType = getRoomType(roomTypeCombobox.getValue());
 					if (reservations.size() == 0) {
-						maybeRoom = roomService.getRoomByTypeAndBalcony(roomType, withBalcony.getValue());
+						maybeRoom = roomService.getRoomByTypeAndBalcony(roomType, withBalcony.getValue()).stream()
+								.findAny().orElse(null);
 					} else {						
 						maybeRoom = findARoom(roomService, withBalcony, dateFrom, dateTo, roomType);
 					}
@@ -219,7 +219,6 @@ public class RezerwacjaView extends VerticalLayout {
 		cancelReservations.addClickListener(e -> {
 			dateFrom.setValue(LocalDate.now());
 			dateTo.setValue(LocalDate.now());
-			withBalcony.setValue(false);
 			reservationsInCart.forEach(res -> {
 				roomService.deleteReservationFromRoom(res.getRoom(), res);
 				reservationService.removeReservation(res);
@@ -233,13 +232,6 @@ public class RezerwacjaView extends VerticalLayout {
 		});
 		// wybór pokoju
 		roomTypeCombobox.addValueChangeListener(e -> {
-			Room r = new Room();
-			if (e.getValue().equals("Apartament")) {
-				r = roomService.getRoomByType(RoomType.APARTAMENT);
-			} else {
-				RoomType roomType = getRoomType(roomTypeCombobox.getValue());
-				r = roomService.getRoomByTypeAndBalcony(roomType, withBalcony.getValue());
-			}
 			if (e.getOldValue() != null && e.getOldValue().equals("Apartament")
 					&& !(e.getValue().equals("Apartament"))) {
 				withBalcony.setValue(false);

@@ -21,10 +21,10 @@ public class RoomService {
 	    this.repository = repository;
 	}
 	
-	public Room getRoomByTypeAndBalcony(RoomType roomType, boolean isBalcony) {
+	public List<Room> getRoomByTypeAndBalcony(RoomType roomType, boolean isBalcony) {
 		return repository.getRoomByTypeAndBalcony(roomType, isBalcony);
 	}
-	public Room getRoomByType(RoomType roomType) {
+	public List<Room> getRoomByType(RoomType roomType) {
 		return repository.getRoomByType(roomType);
 	}
 	public List<Room> getRooms(){
