@@ -33,7 +33,7 @@ public class Reservation {
 	private double totalFee;
 	private String description;
 	@JsonBackReference 
-	@OneToOne
+	@ManyToOne
 	private Room room;
 	@OneToOne
 	private User roomUser;

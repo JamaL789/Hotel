@@ -72,7 +72,7 @@ public class RezerwacjaView extends VerticalLayout {
 	private H3 totalFeeInfo = new H3();
 	private int resIdIterator = 1;
 	private double totalFee = 0;
-
+	private boolean wasPreviouslyCanceled = false;
 	public RezerwacjaView(ReservationService reservationService, UserService userService, RoomService roomService) {
 		this.reservationService = reservationService;
 		this.userService = userService;
@@ -108,10 +108,14 @@ public class RezerwacjaView extends VerticalLayout {
 
 			dateFrom.setValue(LocalDate.now());
 			dateTo.setValue(LocalDate.now());
-			reservationsInCart.forEach(r -> {
-				roomService.deleteReservationFromRoom(r.getRoom(), r);
-				reservationService.removeReservation(r);
+			reservationsInCart.forEach(res -> {
+				roomService.deleteReservationFromRoom(res.getRoom(), res);
 			});
+			reservationsInCart.forEach(res -> {
+				reservationService.removeReservation(res);
+			});
+			resIdIterator += reservationsInCart.size();
+			wasPreviouslyCanceled = true;
 			reservationsInCart.clear();
 			totalFee = 0;
 			Notification.show("Anulowano wszystkie rezerwacje!");
@@ -135,6 +139,11 @@ public class RezerwacjaView extends VerticalLayout {
 					}
 					// jeżeli znaleziono pokój
 					if (maybeRoom != null) {
+						if(wasPreviouslyCanceled) {
+							wasPreviouslyCanceled = false;
+						}else {
+							resIdIterator = 1;
+						}
 						Reservation res = new Reservation();
 						User u = userService.getUserByNick(username.getValue());
 						res.setEnded(false);
@@ -166,7 +175,6 @@ public class RezerwacjaView extends VerticalLayout {
 						reservationsInCart.add(res);
 						Notification.show("Dodano rezerwację do koszyka. Termin: " + dateFrom.getValue().toString());
 						maybeRoom = null;
-						resIdIterator++;
 					} else {
 						Notification.show("Brak wolnych pokojów tego typu!");
 					}
@@ -221,8 +229,12 @@ public class RezerwacjaView extends VerticalLayout {
 			dateTo.setValue(LocalDate.now());
 			reservationsInCart.forEach(res -> {
 				roomService.deleteReservationFromRoom(res.getRoom(), res);
+			});
+			reservationsInCart.forEach(res -> {
 				reservationService.removeReservation(res);
 			});
+			resIdIterator += reservationsInCart.size();
+			wasPreviouslyCanceled = true;
 			reservationsInCart.clear();
 			totalFee = 0;
 			remove(summaryLayout);
